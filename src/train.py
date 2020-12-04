@@ -1,9 +1,7 @@
-import os
-import glob
 import torch
 import numpy as np
 
-from sklearn import preprocessing
+
 from sklearn import model_selection
 from sklearn import metrics
 
@@ -11,7 +9,10 @@ from config import *
 import dataset
 
 def training():
-    images = glob.glob(os.path.join(DATASET_PATH, "*.png"))
-    labels_names = [x.split('/') for x in images]
+    train_img, test_img, train_labels, test_labels, train_orig_labels, test_orig_targets = model_selection.train_test_split(IMAGES, LABELS_ENCODED, LABELS_NAMES, test_size=0.1, random_state=2020)
+    
+    
+    
+  
 
 
