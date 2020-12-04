@@ -1,0 +1,8 @@
+
+DATASET_PATH = "/content/captcha_images_v2"
+BATCH_SIZE = 32
+IMAGE_WIDTH = 300
+IMAGE_HEIGHT = 75
+NUM_WORKERS = 2
+EPOCHS = 200
+DEVICE = 'cuda'
