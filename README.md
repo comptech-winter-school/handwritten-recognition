@@ -1,2 +1,3 @@
 # ocr_pytorch
-example pipeline for ocr on pytorch
+
+Example pipeline for ocr on pytorch
