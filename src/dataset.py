@@ -28,7 +28,7 @@ class OcrDataset:
             GaussNoise(var_limit=5. / 255., p=0.2),
             MultiplicativeNoise(p=0.2),
             Cutout(num_holes=8, max_h_size=10, max_w_size=10,p=0.2),
-            CoarseDropout(max_holes=8, max_heights=10, max_width=10,p=0.2),
+            CoarseDropout(max_holes=8, max_height=10, max_width=10,p=0.2),
             GridDistortion(p=0.2),
             ElasticTransform(sigma=50, alpha=1, alpha_affine=10, p=0.2),
             RandomBrightness(p=0.2),
