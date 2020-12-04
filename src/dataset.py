@@ -8,7 +8,7 @@ from albumentations import Compose, Normalize, MedianBlur, GaussianBlur, \
 
 from PIL import Image
 
-class OCR: 
+class OcrDataset: 
     """
     Handle images for dataloader.
     Apply resize and augmentations.
@@ -54,7 +54,12 @@ class OCR:
             image = image.resize((self.resize[1], self.resize[0]), resample=Image.BILINEAR)
             
         
-
         image = np.array(image)
         augmented_image = self.augmentations(image=image)
         image = augmented_image["image"]
+        image = np.transpose(image,(2,0,1)).astype(np.float32)
+        
+        return {
+            "images": torch.tensor(image, dtype=torch.float),
+            "labels": torch.tensor(labels, dtype=torch.long)
+        }
