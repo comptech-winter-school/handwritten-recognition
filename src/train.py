@@ -1,51 +1,35 @@
+from tqdm import tqdm
 import torch
-import numpy as np
-
-
-from sklearn import model_selection
-from sklearn import metrics
-
 from config import *
-from dataset import OcrDataset
 
 
-def training():
-    (
-        train_img,
-        test_img, 
-        train_labels, 
-        test_labels, 
-        train_orig_labels, 
-        test_orig_targets,
-    )   =model_selection.train_test_split(
-            IMAGES, LABELS_ENCODED, LABELS_NAMES, test_size=0.1, random_state=2020)
+
+def train(model, dataloader, optimizer):
+    model.train()
+    final_loss = 0
+    tracker = tqdm(dataloader, total=len(dataloader))
+    for data in tracker:
+        for key, value in data.items():
+            data[key] = value.to(DEVICE)
+        optimizer.zero_grad()
+        _, loss = model(**data)
+        loss.backward()
+        optimizer.step()
+        final_loss += loss.item()
+    return final_loss / len(dataloader)
     
-    train_dataset = OcrDataset(image_path=train_img, 
-                               labels=train_labels, 
-                               resize=(IMAGE_HEIGHT,IMAGE_WIDTH)
-                              )
-    
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=BATCH_SIZE,
-        num_workers=NUM_WORKERS,
-        shuffle=True
-    )
-    
-    
-    test_dataset = OcrDataset(image_path=test_img, 
-                               labels=test_labels, 
-                               resize=(IMAGE_HEIGHT,IMAGE_WIDTH)
-                              )
-    
-    test_loader = torch.utils.data.DataLoader(
-        test_dataset,
-        batch_size=BATCH_SIZE,
-        num_workers=NUM_WORKERS,
-        shuffle=False
-    )
+
+def evaluate(model, dataloader, optimizer):
+    model.eval()
+    final_loss = 0
+    final_predictions = []
+    tracker = tqdm(dataloader, total=len(dataloader))
+    for data in tracker:
+        for key, value in data.items():
+            data[key] = value.to(DEVICE)
+        batch_predictions, loss = model(**data)
+        final_predictions.append(batch_predictions)
+        final_loss += loss.item()
+    return final_predictions, final_loss / len(dataloader)
         
-
-
-if __name__ == '__main__':
-    training()
+            
