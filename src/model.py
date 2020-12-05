@@ -26,41 +26,41 @@ class OcrModel_v0(nn.Module):
         
     def forward(self, images, labels=None):
         bs, c, h, w = images.size()
-        print(bs, c, h, w)
+        # print(bs, c, h, w)
         x = F.relu(self.conv1(images))
-        print(x.size())
+        # print(x.size())
         x = self.maxpool1(x)
-        print(x.size()) 
+        # print(x.size()) 
         x = F.relu(self.conv2(x))
-        print(x.size())
+        # print(x.size())
         x = self.maxpool2(x)
         # need to change channels for rnn bs, f, h, w --> bs, w, f, h
         x = x.permute(0,3,1,2)
-        print(x.size())
+        # print(x.size())
         x = x.view(bs, x.size(1),-1)
-        print(x.size()[2])
+        # print(x.size()[2])
         x = self.linear1(x)
         x = self.dropout1(x)
-        print(x.size())
+        # print(x.size())
         x, _ = self.gru(x)
-        print(x.size())
+        # print(x.size())
         x = self.output(x)
-        print(x.size())
+        # print(x.size())
         # permute again 
         x = x.permute(1,0,2)
-        print(x.size())
+        # print(x.size())
         if labels is not None: 
             log_softmax_values =  F.log_softmax(x,2)   
             input_lenghts = torch.full(size=(bs,),
                                        fill_value=log_softmax_values.size(0), 
                                        dtype = torch.int32
                                        )
-            print(input_lenghts)
+            # print(input_lenghts)
             
             output_lenghts = torch.full(size=(bs,),
                                         fill_value=labels.size(1), 
                                         dtype = torch.int32)
-            print(output_lenghts)
+            # print(output_lenghts)
             
             loss = nn.CTCLoss(blank=0)(
                 log_softmax_values,
@@ -111,6 +111,6 @@ class OcrModel_v0(nn.Module):
 if __name__ == '__main__':
     # model = OcrModel_v0(model_arch='gluon_seresnext50_32x4d', num_characters=19, pretrained=True)
     model = OcrModel_v0(num_characters=19)
-    img = torch.rand(1,3,75,300)
-    label = torch.randint(1,20,(1,5))
+    img = torch.rand(5,3,75,300)
+    label = torch.randint(1,20,(5,5))
     x, loss = model(img, label)
