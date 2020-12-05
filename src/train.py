@@ -10,6 +10,7 @@ from dataset import OcrDataset
 
 from model import OcrModel_v0
 from train_utils import train, evaluate
+from decode_predictions import decode_preds
 
 
 def fit():
@@ -58,7 +59,14 @@ def fit():
     for epoch in range(EPOCHS):
         train_loss = train(model, train_loader, optimizer)
         valid_preds, valid_loss = evaluate(model, train_loader)
+        valid_final_preds = []
+        for pred in valid_preds:
+            cur_preds = decode_preds(pred,labels_encoded)
+            valid_final_preds.extend(cur_pred)
+        show_preds_list = list(zip(test_orig_targets, valid_final_preds))
+        print(show_preds_list)
         print(f"Epoch: {epoch} | Train loss = {train_loss} | Valid loss = {valid_loss} |")
+        
 
 if __name__ == '__main__':
     fit()
