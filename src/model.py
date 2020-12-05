@@ -1,11 +1,53 @@
 import torch
 import torch.nn as nn
+from torch.nn import functional as F
 import timm
 
-model_arch = 'gluon_seresnext50_32x4d'
 
-model = timm.create_model(model_arch, pretrained=True)
-print(dir(model.fc))
+# model_arch = 'gluon_seresnext50_32x4d'
+
+# model = timm.create_model(model_arch, pretrained=True)
+# print(dir(model.fc))
+
+class OcrModel_v0(nn.Module):
+    def __init__(self, num_characters):
+        super(OcrModel_v0, self).__init__()
+        self.conv1 = nn.Conv2d(3,128, kernel_size=(3,3), padding=(1,1))
+        self.maxpool1 = nn.MaxPool2d(kernel_size=(2,2))
+        self.conv2 = nn.Conv2d(128,64, kernel_size=(3,3), padding=(1,1))
+        self.maxpool2 = nn.MaxPool2d(kernel_size=(2,2))
+        self.linear1 = nn.Linear(1152, 64)
+        self.dropout1  = nn.Dropout(0.2)
+        self.gru = nn.GRU(64, 32 , bidirectional=True,
+                          num_layers=2,
+                          dropout=0.25,
+                          batch_first=True)
+        self.output = nn.Linear(64, num_characters + 1)
+        
+    def forward(self, images, labels=None):
+        bs, c, h, w = images.size()
+        print(bs, c, h, w)
+        x = F.relu(self.conv1(images))
+        print(x.size())
+        x = self.maxpool1(x)
+        print(x.size()) 
+        x = F.relu(self.conv2(x))
+        print(x.size())
+        x = self.maxpool2(x)
+        # need to change channels for rnn bs, f, h, w --> bs, w, f, h
+        x = x.permute(0,3,1,2)
+        print(x.size())
+        x = x.view(bs, x.size(1),-1)
+        print(x.size()[2])
+        x = self.linear1(x)
+        x = self.dropout1(x)
+        print(x.size())
+        x, _ = self.gru(x)
+        print(x.size())
+        x = self.output(x)
+        print(x.size())
+        if labels is not None:     
+            return x, None
 
 # class OcrModel_v0(nn.Module):
 #     def __init__(self,model_arch, num_characters, pretrained=False):
@@ -43,8 +85,9 @@ print(dir(model.fc))
 #         x = self.model(x)
 #         return x
 
-# if __name__ == '__main__':
-#     model = OcrModel_v0(model_arch='gluon_seresnext50_32x4d', num_characters=19, pretrained=True)
-#     img = torch.rand(1,3,75,300)
-#     target = torch.randint(1,20,(1,5))
-#     x, loss = model(img, target)
+if __name__ == '__main__':
+    # model = OcrModel_v0(model_arch='gluon_seresnext50_32x4d', num_characters=19, pretrained=True)
+    model = OcrModel_v0(num_characters=19)
+    img = torch.rand(1,3,75,300)
+    label = torch.randint(1,20,(1,5))
+    x, loss = model(img, label)
