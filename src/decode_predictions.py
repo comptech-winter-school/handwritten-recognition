@@ -4,7 +4,7 @@ import torch
 
 def decode_preds(preds, encoder):
     preds = preds.permute(1,0,2)
-    preds = preds.softmax(preds,2)
+    preds = torch.softmax(preds,2)
     preds = torch.argmax(preds,2)
     preds = preds.detach().cpu().numpy()
     preds_list  = []
