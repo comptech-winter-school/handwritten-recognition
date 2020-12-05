@@ -54,7 +54,7 @@ def fit():
     model.to(DEVICE)
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, factor=0.8, patience=5, verbose=True
+        optimizer, factor=0.8, patience=2, verbose=True
     )
     
     for epoch in range(EPOCHS):
@@ -64,12 +64,13 @@ def fit():
         
         for pred in valid_preds:
             # print(pred)
-            cur_preds = decode_preds(pred,LABELS_ENCODED)
+            cur_preds = decode_preds(pred, labels_encoded)
             valid_final_preds.extend(cur_preds)
         show_preds_list = list(zip(test_orig_targets, valid_final_preds))[1:3]
         pprint(show_preds_list)
+        pprint("-"*90)
         pprint(f"Epoch: {epoch} | Train loss = {train_loss} | Valid loss = {valid_loss} |")
-        
+        pprint("-"*90)
 
 if __name__ == '__main__':
     fit()

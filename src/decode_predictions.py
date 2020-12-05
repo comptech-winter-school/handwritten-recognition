@@ -15,7 +15,7 @@ def decode_preds(preds, encoder):
             if j == -1:
                 tmp.append("*")
             else:
-                tmp.append(encoder.inverse_transform([j][0]))
+                tmp.append(encoder.inverse_transform([j])[0])
         element = "".join(tmp)
         preds_list.append(element)
     return preds_list

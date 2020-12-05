@@ -22,23 +22,23 @@ class OcrDataset:
         self.augmentations = Compose(
             [
             Normalize(always_apply=True),
-            MedianBlur(blur_limit=5, p=0.2),
-            GaussianBlur(p=0.2),
-            MotionBlur(p=0.2),
-            GaussNoise(var_limit=5. / 255., p=0.2),
-            MultiplicativeNoise(p=0.2),
-            Cutout(num_holes=8, max_h_size=10, max_w_size=10,p=0.2),
-            CoarseDropout(max_holes=8, max_height=10, max_width=10,p=0.2),
-            GridDistortion(p=0.2),
-            ElasticTransform(sigma=50, alpha=1, alpha_affine=10, p=0.2),
-            RandomBrightness(p=0.2),
-            RandomContrast(p=0.2),
-            RandomBrightnessContrast(p=0.2),
-            IAAPiecewiseAffine(p=0.2),
-            ShiftScaleRotate(shift_limit=0.1,
-                                scale_limit=0.1,
-                                rotate_limit=30,
-                                p=0.2)             
+            # MedianBlur(blur_limit=5, p=0.2),
+            # GaussianBlur(p=0.2),
+            # MotionBlur(p=0.2),
+            # GaussNoise(var_limit=5. / 255., p=0.2),
+            # MultiplicativeNoise(p=0.2),
+            # Cutout(num_holes=8, max_h_size=10, max_w_size=10,p=0.2),
+            # CoarseDropout(max_holes=8, max_height=10, max_width=10,p=0.2),
+            # GridDistortion(p=0.2),
+            # ElasticTransform(sigma=50, alpha=1, alpha_affine=10, p=0.2),
+            # RandomBrightness(p=0.2),
+            # RandomContrast(p=0.2),
+            # RandomBrightnessContrast(p=0.2),
+            # IAAPiecewiseAffine(p=0.2),
+            # ShiftScaleRotate(shift_limit=0.1,
+            #                     scale_limit=0.1,
+            #                     rotate_limit=30,
+            #                     p=0.2)             
             ]                                    
                                             
                                             )
