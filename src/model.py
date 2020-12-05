@@ -46,8 +46,31 @@ class OcrModel_v0(nn.Module):
         print(x.size())
         x = self.output(x)
         print(x.size())
-        if labels is not None:     
-            return x, None
+        # permute again 
+        x = x.permute(1,0,2)
+        print(x.size())
+        if labels is not None: 
+            log_softmax_values =  F.log_softmax(x,2)   
+            input_lenghts = torch.full(size=(bs,),
+                                       fill_value=log_softmax_values.size(0), 
+                                       dtype = torch.int32
+                                       )
+            print(input_lenghts)
+            
+            output_lenghts = torch.full(size=(bs,),
+                                        fill_value=labels.size(1), 
+                                        dtype = torch.int32)
+            print(output_lenghts)
+            
+            loss = nn.CTCLoss(blank=0)(
+                log_softmax_values,
+                labels,
+                input_lenghts,
+                output_lenghts
+            )  
+            
+            return x, loss
+        
 
 # class OcrModel_v0(nn.Module):
 #     def __init__(self,model_arch, num_characters, pretrained=False):
