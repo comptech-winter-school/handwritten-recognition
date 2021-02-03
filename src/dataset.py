@@ -61,5 +61,28 @@ class OcrDataset:
         
         return {
             "images": torch.tensor(image, dtype=torch.float),
-            "labels": torch.tensor(labels, dtype=torch.long)
+            "labels": torch.tensor(labels, dtype=torch.long),
+            "len_labels": len(labels)
         }
+
+
+
+class TextCollate():
+    def __call__(self, batch):
+        x_padded = []
+        bs = len(batch)
+        max_y_len = max([i['labels'].size(0) for i in batch])
+        y_padded = torch.LongTensor(len(batch), max_y_len)
+        y_padded.zero_()
+        len_labels = torch.zeros((bs,1), dtype=torch.int32)
+ 
+        for i in range(len(batch)):
+            x_padded.append(batch[i]['images'].unsqueeze(0))
+            y = batch[i]['labels']
+            len_labels[i,0]= len(y)
+            y_padded[i, :y.size(0)] = y
+ 
+        x_padded = torch.cat(x_padded)
+        return {'images': x_padded,
+                'labels': y_padded,
+                'len_labels':len_labels} 
