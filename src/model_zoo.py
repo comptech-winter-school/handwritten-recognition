@@ -1,3 +1,8 @@
+from torchvision import models
+from torch import nn
+
+
+
 class ResNetOCR(nn.Module):
   def __init__(self, n_classes, hidden_rnn):
     super(ResNetOCR,self).__init__()
@@ -130,20 +135,20 @@ class CRNN(nn.Module):
         # add log_softmax to converge output
         x = output
         print(x.size())
-        if labels is not None: 
-            log_softmax_values =  F.log_softmax(x,2)   
-            input_lenghts = torch.full(size=(b,),
-                                       fill_value=log_softmax_values.size(0), 
-                                       dtype = torch.int32
-                                       )
-            loss = nn.CTCLoss(blank=0,zero_infinity = True)(
-                log_softmax_values,
-                labels,
-                input_lenghts,
-                len_labels
-            )  
-            
-            return x, loss
+        if labels is not None:
+          log_softmax_values =  F.log_softmax(x,2)   
+          input_lenghts = torch.full(size=(b,),
+                                     fill_value=log_softmax_values.size(0), 
+                                     dtype = torch.int32
+                                     )
+          loss = nn.CTCLoss(blank=0,zero_infinity = True)(
+              log_softmax_values,
+              labels,
+              input_lenghts,
+              len_labels
+          )  
+          
+          return x, loss
 
         return x
 
@@ -183,21 +188,21 @@ class OcrModel_mobilenet(nn.Module):
         x = x.permute(1,0,2)
         #print(x.size())
         if labels is not None: 
-            log_softmax_values =  F.log_softmax(x,2)   
-            input_lenghts = torch.full(size=(bs,),
-                                       fill_value=log_softmax_values.size(0), 
-                                       dtype = torch.int32
-                                       )
-            #print(input_lenghts)
-            
-            loss = nn.CTCLoss(blank=0,zero_infinity = True)(
-                log_softmax_values,
-                labels,
-                input_lenghts,
-                len_labels
-            )  
-            
-            return x, loss
+          log_softmax_values =  F.log_softmax(x,2)   
+          input_lenghts = torch.full(size=(bs,),
+                                     fill_value=log_softmax_values.size(0), 
+                                     dtype = torch.int32
+                                     )
+          #print(input_lenghts)
+          
+          loss = nn.CTCLoss(blank=0,zero_infinity = True)(
+              log_softmax_values,
+              labels,
+              input_lenghts,
+              len_labels
+          )  
+          
+          return x, loss
         return x
 
 
@@ -236,17 +241,17 @@ class OcrModel_vgg16(nn.Module):
         x = x.permute(1,0,2)
         #print(x.size())
         if labels is not None: 
-            log_softmax_values =  F.log_softmax(x,2)   
-            input_lenghts = torch.full(size=(bs,),
-                                       fill_value=log_softmax_values.size(0), 
-                                       dtype = torch.int32
-                                       )
-           
-            loss = nn.CTCLoss(blank=0, zero_infinity = True)(
-                log_softmax_values,
-                labels,
-                input_lenghts,
-                len_labels)
-            
-            return x, loss
+          log_softmax_values =  F.log_softmax(x,2)   
+          input_lenghts = torch.full(size=(bs,),
+                                     fill_value=log_softmax_values.size(0), 
+                                     dtype = torch.int32
+                                     )
+          
+          loss = nn.CTCLoss(blank=0, zero_infinity = True)(
+              log_softmax_values,
+              labels,
+              input_lenghts,
+              len_labels)
+          
+          return x, loss
         return x
