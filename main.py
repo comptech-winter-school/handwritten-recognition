@@ -18,7 +18,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 
-TOKEN = "1673852036:AAESmCKM-4bXapg1ZUutdZ5ogvd-n1ZSHVs"
+TOKEN = ""
 PORT = 5000
 
 """# Определяем функции:"""
